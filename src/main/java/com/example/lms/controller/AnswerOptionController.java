@@ -53,6 +53,6 @@ public class AnswerOptionController {
             return ResponseEntity.notFound().build();
         }
         answerOptionRepo.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

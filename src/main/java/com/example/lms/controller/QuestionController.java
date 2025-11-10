@@ -53,6 +53,6 @@ public class QuestionController {
             return ResponseEntity.notFound().build();
         }
         questionRepo.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

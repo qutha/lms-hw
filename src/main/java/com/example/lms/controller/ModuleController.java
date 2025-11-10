@@ -53,6 +53,6 @@ public class ModuleController {
             return ResponseEntity.notFound().build();
         }
         courseModuleRepo.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

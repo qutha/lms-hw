@@ -48,6 +48,6 @@ public class AssignmentController {
             return ResponseEntity.notFound().build();
         }
         assignmentRepo.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

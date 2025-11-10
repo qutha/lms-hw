@@ -53,6 +53,6 @@ public class LessonController {
             return ResponseEntity.notFound().build();
         }
         lessonRepo.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

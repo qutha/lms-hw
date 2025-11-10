@@ -27,4 +27,31 @@ class CategoryControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Программирование"));
     }
+
+    @Test
+    void getCategoryByName_AnotherCategory_ReturnsCategory() throws Exception {
+        mockMvc.perform(get("/api/categories/name/Разработка ПО"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Разработка ПО"));
+    }
+
+    @Test
+    void getCategoryByName_MathCategory_ReturnsCategory() throws Exception {
+        mockMvc.perform(get("/api/categories/name/Высшая математика"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Высшая математика"));
+    }
+
+    @Test
+    void getCategoryByName_DesignCategory_ReturnsCategory() throws Exception {
+        mockMvc.perform(get("/api/categories/name/Графический дизайн"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Графический дизайн"));
+    }
+
+    @Test
+    void getCategoryByName_NonExistingName_ReturnsNotFound() throws Exception {
+        mockMvc.perform(get("/api/categories/name/НесуществующаяКатегория"))
+                .andExpect(status().isNotFound());
+    }
 }

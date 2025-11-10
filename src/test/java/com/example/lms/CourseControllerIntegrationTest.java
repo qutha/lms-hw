@@ -33,4 +33,45 @@ class CourseControllerIntegrationTest {
         mockMvc.perform(get("/api/courses/999"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void getCoursesByTeacher_Teacher2_ReturnsCourses() throws Exception {
+        mockMvc.perform(get("/api/courses/teacher/2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void getCoursesByTeacher_Teacher3_ReturnsCourses() throws Exception {
+        mockMvc.perform(get("/api/courses/teacher/3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].title").value("Высшая математика для IT"));
+    }
+
+    @Test
+    void getCourseById_Course1_VerifyDetails() throws Exception {
+        mockMvc.perform(get("/api/courses/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("Основы Java программирования"))
+                .andExpect(jsonPath("$.description").value("Комплексный курс для новичков по языку Java"));
+    }
+
+    @Test
+    void getCourseById_Course3_VerifyDetails() throws Exception {
+        mockMvc.perform(get("/api/courses/3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(3))
+                .andExpect(jsonPath("$.title").value("SQL и реляционные базы данных"));
+    }
+
+    @Test
+    void getCoursesByTeacher_NonExistingTeacher_ReturnsEmptyArray() throws Exception {
+        mockMvc.perform(get("/api/courses/teacher/999"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+    }
 }

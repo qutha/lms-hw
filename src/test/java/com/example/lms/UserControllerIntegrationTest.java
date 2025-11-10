@@ -34,4 +34,48 @@ class UserControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
     }
+
+    @Test
+    void getUserById_User1_VerifyDetails() throws Exception {
+        mockMvc.perform(get("/api/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Петр Иванов"))
+                .andExpect(jsonPath("$.email").value("petr.ivanov@mail.ru"))
+                .andExpect(jsonPath("$.role").value("TEACHER"));
+    }
+
+    @Test
+    void getUserById_User4_VerifyStudentRole() throws Exception {
+        mockMvc.perform(get("/api/users/4"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.name").value("Анастасия Федорова"))
+                .andExpect(jsonPath("$.email").value("anastasia.fedorova@mail.ru"))
+                .andExpect(jsonPath("$.role").value("STUDENT"));
+    }
+
+    @Test
+    void getUserById_User9_VerifyAdminRole() throws Exception {
+        mockMvc.perform(get("/api/users/9"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(9))
+                .andExpect(jsonPath("$.name").value("Главный администратор"))
+                .andExpect(jsonPath("$.email").value("admin@eduplatform.ru"))
+                .andExpect(jsonPath("$.role").value("ADMIN"));
+    }
+
+    @Test
+    void getUserById_NonExistingId_ReturnsNotFound() throws Exception {
+        mockMvc.perform(get("/api/users/999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getAllUsers_VerifyMultipleUsersReturned() throws Exception {
+        mockMvc.perform(get("/api/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(9));
+    }
 }

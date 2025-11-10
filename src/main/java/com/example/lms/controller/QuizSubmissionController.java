@@ -66,6 +66,6 @@ public class QuizSubmissionController {
             return ResponseEntity.notFound().build();
         }
         quizSubmissionRepo.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

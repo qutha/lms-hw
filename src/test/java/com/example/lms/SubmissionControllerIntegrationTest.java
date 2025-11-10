@@ -27,4 +27,36 @@ class SubmissionControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
+
+    @Test
+    void getSubmissionsByAssignment_Assignment1_VerifySubmissionDetails() throws Exception {
+        mockMvc.perform(get("/api/submissions/assignment/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].score").value(98))
+                .andExpect(jsonPath("$[0].studentId").value(4));
+    }
+
+    @Test
+    void getSubmissionsByAssignment_NonExistingAssignment_ReturnsEmptyArray() throws Exception {
+        mockMvc.perform(get("/api/submissions/assignment/999"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void getSubmissionsByAssignment_VerifyContent() throws Exception {
+        mockMvc.perform(get("/api/submissions/assignment/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].content").value("public class HelloWorld { public static void main(String[] args) { System.out.println(\"Hello World\"); } }"));
+    }
+
+    @Test
+    void getSubmissionsByAssignment_VerifyFeedback() throws Exception {
+        mockMvc.perform(get("/api/submissions/assignment/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].feedback").exists())
+                .andExpect(jsonPath("$[0].submittedAt").exists());
+    }
 }
