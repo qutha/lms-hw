@@ -2,9 +2,16 @@ name: CD
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     tags:
       - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      docker_tag:
+        description: "Docker image tag (optional)"
+        required: false
+        default: "manual"
+        type: string
 
 jobs:
   build-and-deploy:
