@@ -1,0 +1,61 @@
+version: "3.8"
+
+name: lms
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: lms-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-lms_db}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lms-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-lms_db}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  lms-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lms-application
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      SERVER_PORT: ${SERVER_PORT:-8080}
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-lms_db}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      FLYWAY_ENABLED: ${FLYWAY_ENABLED:-true}
+      DDL_AUTO: ${DDL_AUTO:-validate}
+      SHOW_SQL: ${SHOW_SQL:-false}
+      HIBERNATE_SQL_LOGGING: ${HIBERNATE_SQL_LOGGING:-INFO}
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - lms-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  lms-network:
+    driver: bridge

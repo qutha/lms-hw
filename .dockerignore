@@ -1,0 +1,16 @@
+target/
+.mvn/
+mvnw
+mvnw.cmd
+*.md
+.git/
+.gitignore
+.env
+.env.template
+docker-compose.yml
+Dockerfile
+*.log
+.idea/
+*.iml
+.vscode/
+.DS_Store
