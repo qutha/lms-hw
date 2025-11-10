@@ -36,7 +36,7 @@ class AnswerOptionControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.text").value("System.out.println()"))
-                .andExpect(jsonPath("$.correct").value("true"));
+                .andExpect(jsonPath("$.isCorrect").value("true"));
     }
 
     @Test
@@ -67,9 +67,9 @@ class AnswerOptionControllerIntegrationTest {
     void getAnswerOptionsByQuestion_VerifyCorrectAnswer() throws Exception {
         mockMvc.perform(get("/api/answer-options/question/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].correct").value("true"))
-                .andExpect(jsonPath("$[1].correct").value("false"))
-                .andExpect(jsonPath("$[2].correct").value("false"));
+                .andExpect(jsonPath("$[0].isCorrect").value("true"))
+                .andExpect(jsonPath("$[1].isCorrect").value("false"))
+                .andExpect(jsonPath("$[2].isCorrect").value("false"));
     }
 
     @Test
@@ -78,7 +78,7 @@ class AnswerOptionControllerIntegrationTest {
                 {
                     "questionId": 1,
                     "text": "Новый вариант ответа",
-                    "correct": false
+                    "isCorrect": false
                 }
                 """;
 
@@ -87,7 +87,7 @@ class AnswerOptionControllerIntegrationTest {
                         .content(optionJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.text").value("Новый вариант ответа"))
-                .andExpect(jsonPath("$.correct").value("false"));
+                .andExpect(jsonPath("$.isCorrect").value("false"));
     }
 
     @Test
@@ -95,7 +95,7 @@ class AnswerOptionControllerIntegrationTest {
         String updatedJson = """
                 {
                     "text": "Обновленный вариант ответа",
-                    "correct": true
+                    "isCorrect": true
                 }
                 """;
 
@@ -105,7 +105,7 @@ class AnswerOptionControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.text").value("Обновленный вариант ответа"))
-                .andExpect(jsonPath("$.correct").value("true"));
+                .andExpect(jsonPath("$.isCorrect").value("true"));
     }
 
     @Test
@@ -113,7 +113,7 @@ class AnswerOptionControllerIntegrationTest {
         String updatedJson = """
                 {
                     "text": "Вариант ответа",
-                    "correct": false
+                    "isCorrect": false
                 }
                 """;
 
