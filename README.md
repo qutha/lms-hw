@@ -60,6 +60,67 @@
 - Записи на курсы (`/api/enrollments`)
 - Отзывы (`/api/reviews`)
 
+### DevOps
+
+Реализованы следующие GitHub Actions workflows:
+
+#### CI (Continuous Integration)
+**Файл**: `.github/workflows/ci.yml`
+
+**Триггеры**: 
+- Push в ветки `master`, `dev`
+- Pull Request в ветки `master`, `dev`
+- Ручной запуск (workflow_dispatch)
+
+**Процесс**:
+1. Разворачивание PostgreSQL в Docker контейнере для тестов
+2. Сборка проекта с Maven (`./mvnw clean compile`)
+3. Запуск всех тестов с подключением к тестовой БД
+4. Упаковка приложения в JAR файл
+5. Сохранение артефакта (JAR файл) на 7 дней
+6. Генерация отчета о тестировании
+
+#### CD (Continuous Deployment)
+**Файл**: `.github/workflows/cd.yml`
+
+**Триггеры**:
+- Push в ветки `master`, `dev` (отключен)
+- Pull Request в ветки `master`, `dev` (отключен)
+- Ручной запуск (workflow_dispatch) с опциональным указанием тега Docker образа
+
+**Процесс**:
+1. Сборка проекта с Maven (`./mvnw clean package`)
+2. Настройка Docker Buildx для мультиплатформенной сборки
+3. Авторизация в Docker Hub
+4. Извлечение метаданных для тегирования образа (ветка, версия, SHA коммита)
+5. Сборка и публикация Docker образа в Docker Hub с несколькими тегами
+6. Создание GitHub Release при публикации тега версии
+
+#### Code Quality (Качество кода)
+**Файл**: `.github/workflows/code-quality.yml`
+
+**Триггеры**:
+- Push в ветки `master`, `dev`
+- Pull Request в ветки `master`, `dev`
+- Ручной запуск (workflow_dispatch)
+
+**Процесс**:
+1. Анализ кода с помощью SonarCloud (покрытие тестами, код смеллы, уязвимости)
+2. Проверка стиля кода с помощью Checkstyle
+3. Статический анализ кода с помощью SpotBugs (поиск багов и потенциальных проблем)
+
+#### Dependency Review (Проверка зависимостей)
+**Файл**: `.github/workflows/dependency-review.yml`
+
+**Триггеры**:
+- Pull Request в ветки `master`, `dev`
+
+**Процесс**:
+1. Проверка добавленных зависимостей на наличие известных уязвимостей
+2. Блокировка PR при обнаружении уязвимостей уровня moderate и выше
+3. Автоматическое добавление комментария с результатами в Pull Request
+
+
 ## Запуск проекта
 
 Создать `.env` по шаблону `.env.template` (если хотите поменять значения по умолчанию)
