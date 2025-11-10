@@ -16,21 +16,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-class UserControllerIntegrationTest {
+class QuizControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    void getAllUsers_ReturnsUsers() throws Exception {
-        mockMvc.perform(get("/api/users"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray());
-    }
-
-    @Test
-    void getUserById_ExistingId_ReturnsUser() throws Exception {
-        mockMvc.perform(get("/api/users/1"))
+    void getQuizByModule_ExistingModule_ReturnsQuiz() throws Exception {
+        mockMvc.perform(get("/api/quizzes/module/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
     }
