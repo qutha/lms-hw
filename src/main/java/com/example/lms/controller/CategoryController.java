@@ -1,13 +1,19 @@
 package com.example.lms.controller;
 
+import com.example.lms.dto.CategoryResponse;
+import com.example.lms.dto.CreateCategoryRequest;
+import com.example.lms.dto.UpdateCategoryRequest;
+import com.example.lms.mapper.CategoryMapper;
 import com.example.lms.model.Category;
 import com.example.lms.repo.CategoryRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -15,38 +21,48 @@ import java.util.Optional;
 public class CategoryController {
 
     private final CategoryRepository categoryRepo;
+    private final CategoryMapper categoryMapper;
 
     @GetMapping
-    public List<Category> getAllCategories() {
-        return categoryRepo.findAll();
+    public List<CategoryResponse> getAllCategories() {
+        return categoryRepo.findAll().stream()
+                .map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
         Optional<Category> category = categoryRepo.findById(id);
-        return category.map(ResponseEntity::ok)
+        return category.map(categoryMapper::toResponse)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<Category> getCategoryByName(@PathVariable String name) {
+    public ResponseEntity<CategoryResponse> getCategoryByName(@PathVariable String name) {
         Optional<Category> category = categoryRepo.findByName(name);
-        return category.map(ResponseEntity::ok)
+        return category.map(categoryMapper::toResponse)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Category createCategory(@RequestBody Category category) {
-        return categoryRepo.save(category);
+    public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CreateCategoryRequest request) {
+        Category category = categoryMapper.toEntity(request);
+        Category savedCategory = categoryRepo.save(category);
+        return ResponseEntity.ok(categoryMapper.toResponse(savedCategory));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
-        if (categoryRepo.findById(id).isEmpty()) {
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, 
+                                                            @Valid @RequestBody UpdateCategoryRequest request) {
+        Category existingCategory = categoryRepo.findById(id).orElse(null);
+        if (existingCategory == null) {
             return ResponseEntity.notFound().build();
         }
-        category.setId(id);
-        return ResponseEntity.ok(categoryRepo.save(category));
+        Category updatedCategory = categoryMapper.toEntity(request, existingCategory);
+        Category savedCategory = categoryRepo.save(updatedCategory);
+        return ResponseEntity.ok(categoryMapper.toResponse(savedCategory));
     }
 
     @DeleteMapping("/{id}")

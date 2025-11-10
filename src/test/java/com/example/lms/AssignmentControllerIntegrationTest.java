@@ -49,6 +49,7 @@ class AssignmentControllerIntegrationTest {
     void createAssignment_ValidData_ReturnsCreatedAssignment() throws Exception {
         String assignmentJson = """
                 {
+                    "lessonId": 1,
                     "title": "Новое задание",
                     "description": "Описание нового задания",
                     "maxScore": 100
@@ -102,7 +103,7 @@ class AssignmentControllerIntegrationTest {
     void deleteAssignment_ExistingId_ReturnsNoContent() throws Exception {
         mockMvc.perform(delete("/api/assignments/1"))
                 .andExpect(status().isNoContent());
-        
+
         mockMvc.perform(get("/api/assignments/1"))
                 .andExpect(status().isNotFound());
     }

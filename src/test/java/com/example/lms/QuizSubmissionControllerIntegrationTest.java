@@ -102,8 +102,8 @@ class QuizSubmissionControllerIntegrationTest {
     void createQuizSubmission_ValidData_ReturnsCreatedSubmission() throws Exception {
         String submissionJson = """
                 {
-                    "quiz": 1,
-                    "student": 1,
+                    "quizId": 1,
+                    "studentId": 1,
                     "score": 95
                 }
                 """;
@@ -149,7 +149,7 @@ class QuizSubmissionControllerIntegrationTest {
     void deleteQuizSubmission_ExistingId_ReturnsNoContent() throws Exception {
         mockMvc.perform(delete("/api/quiz-submissions/1"))
                 .andExpect(status().isNoContent());
-        
+
         mockMvc.perform(get("/api/quiz-submissions/1"))
                 .andExpect(status().isNotFound());
     }

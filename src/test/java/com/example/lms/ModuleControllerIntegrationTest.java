@@ -75,6 +75,7 @@ class ModuleControllerIntegrationTest {
     void createModule_ValidData_ReturnsCreatedModule() throws Exception {
         String moduleJson = """
                 {
+                    "courseId": 1,
                     "title": "Новый модуль",
                     "orderIndex": 4
                 }
@@ -125,7 +126,7 @@ class ModuleControllerIntegrationTest {
     void deleteModule_ExistingId_ReturnsNoContent() throws Exception {
         mockMvc.perform(delete("/api/modules/1"))
                 .andExpect(status().isNoContent());
-        
+
         mockMvc.perform(get("/api/modules/1"))
                 .andExpect(status().isNotFound());
     }

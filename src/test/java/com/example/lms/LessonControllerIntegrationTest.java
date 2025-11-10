@@ -64,6 +64,7 @@ class LessonControllerIntegrationTest {
     void createLesson_ValidData_ReturnsCreatedLesson() throws Exception {
         String lessonJson = """
                 {
+                    "moduleId": 1,
                     "title": "Новый урок по Java",
                     "content": "Содержание урока",
                     "videoUrl": "/videos/new-lesson.mp4"
@@ -115,7 +116,7 @@ class LessonControllerIntegrationTest {
     void deleteLesson_ExistingId_ReturnsNoContent() throws Exception {
         mockMvc.perform(delete("/api/lessons/1"))
                 .andExpect(status().isNoContent());
-        
+
         mockMvc.perform(get("/api/lessons/1"))
                 .andExpect(status().isNotFound());
     }

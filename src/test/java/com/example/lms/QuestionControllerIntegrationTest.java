@@ -74,6 +74,7 @@ class QuestionControllerIntegrationTest {
     void createQuestion_ValidData_ReturnsCreatedQuestion() throws Exception {
         String questionJson = """
                 {
+                    "quizId": 1,
                     "text": "Что такое JVM?",
                     "type": "SINGLE_CHOICE"
                 }
@@ -124,7 +125,7 @@ class QuestionControllerIntegrationTest {
     void deleteQuestion_ExistingId_ReturnsNoContent() throws Exception {
         mockMvc.perform(delete("/api/questions/1"))
                 .andExpect(status().isNoContent());
-        
+
         mockMvc.perform(get("/api/questions/1"))
                 .andExpect(status().isNotFound());
     }
